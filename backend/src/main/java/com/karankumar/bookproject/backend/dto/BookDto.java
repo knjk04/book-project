@@ -20,19 +20,10 @@ package com.karankumar.bookproject.backend.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.karankumar.bookproject.backend.model.Author;
 import lombok.Data;
-// import lombok.Setter;
 import javax.persistence.Id;
-//import lombok.Builder;
-//import lombok.AccessLevel;
-//import lombok.AllArgsConstructor;
-//import lombok.NoArgsConstructor;
 
-//@NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@AllArgsConstructor
-//@Builder
 @Data
 public class BookDto {
-	// @Setter
 	@Id
 	@JsonProperty("id")
 	private Long id;
@@ -41,11 +32,9 @@ public class BookDto {
     private String title;
 
     @JsonProperty("numberOfPages")
-    //@Max(value = MAX_PAGES)
     private Integer numberOfPages;
 
     @JsonProperty("pagesRead")
-    //@Max(value = MAX_PAGES)
     private Integer pagesRead;
 
     @JsonProperty("bookGenre")
@@ -63,7 +52,6 @@ public class BookDto {
     @JsonProperty("bookRecommendedBy")
     private String bookRecommendedBy;
 
-    //@ISBN
     @JsonProperty("isbn")
     private String isbn;
 
@@ -76,22 +64,6 @@ public class BookDto {
     @JsonProperty("predefinedShelf")
     private String predefinedShelf;
     
-    // For books that have been read
-    // @JsonProperty("rating")
-    // private RatingScale rating;
-
-    // @JsonProperty("dateStartedReading")
-    // @JsonSerialize(using = LocalDateSerializer.class)
-    // private LocalDate dateStartedReading;
-
-    // @JsonProperty("dateFinishedReading")
-    // @JsonSerialize(using = LocalDateSerializer.class)
-    // private LocalDate dateFinishedReading;
-
     @JsonProperty("bookReview")
     private String bookReview;
-
-    
-
-    
 }

@@ -20,8 +20,7 @@ import {Layout} from '../shared/components/Layout';
 import {RouteComponentProps} from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import PasswordInput from '../shared/form/Password';
-import Endpoints from '../shared/api/endpoints';
-import Verb from '../shared/http/verb';
+import HttpClient from '../shared/http/HttpClient';
 import {Link} from 'react-router-dom';
 import './DeleteAccount.css'
 
@@ -60,28 +59,17 @@ export default class DeleteAccount extends Component<IDeleteAccountProps, IDelet
     }
 
     onDeleteInvoked():void {
-        const requestOptions = {
-            method: Verb.DELETE,
-            headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                password: this.state.password
-            })
-        }
-
-        fetch(Endpoints.user, requestOptions)
-            .then(response => {
-                if (response.ok) {
-                    this.props.history.push('/')
-                } else {
-                    this.setState({isPasswordInvalid:true});
-                }
-            })
-            .catch(error => {
-                console.error('error: ', error);
-            })
+        HttpClient.deleteAccount(this.state.password)
+        .then(response => {
+            if (response.ok) {
+                this.props.history.push('/')
+            } else {
+                this.setState({isPasswordInvalid:true});
+            }
+        })
+        .catch(error => {
+            console.error('error: ', error);
+        })
     }
 
     render():JSX.Element {

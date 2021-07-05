@@ -14,6 +14,7 @@
 
 package com.karankumar.bookproject.backend.controller;
 
+import com.karankumar.bookproject.backend.dto.UserToDeleteDto;
 import com.karankumar.bookproject.backend.model.account.User;
 import com.karankumar.bookproject.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -71,9 +70,10 @@ public class UserController {
         userService.register(user);
     }
 
-    @DeleteMapping("/{password}")
+    @DeleteMapping()
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCurrentUser(@PathVariable String password) {
+    public void deleteCurrentUser(@RequestBody UserToDeleteDto user) {
+        String password = user.getPassword();
         if (passwordEncoder.matches(password, userService.getCurrentUser().getPassword())) {
             Long userId = userService.getCurrentUser().getId();
             if (userId == null) {

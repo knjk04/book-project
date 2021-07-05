@@ -22,8 +22,7 @@ import Password from '../shared/form/Password';
 import EmailAddress from '../shared/form/EmailAddress';
 import {Link} from "react-router-dom";
 import logo from '../shared/media/logo/logo_one_line@1x.png';
-import Endpoints from '../shared/api/endpoints';
-import Verb from '../shared/http/verb';
+import HttpClient from '../shared/http/HttpClient';
 import {RouteComponentProps} from 'react-router-dom';
 import {MY_BOOKS, SIGN_UP} from "../shared/routes";
 import ForgotPasswordModal from './forgotPassword/ForgotPasswordModal';
@@ -42,7 +41,6 @@ interface IState {
 }
 
 type LoginProps = Record<string, unknown> & RouteComponentProps
-
 class Login extends Component<LoginProps, IState> {
     constructor(props: LoginProps) {
         super(props)
@@ -136,19 +134,7 @@ class Login extends Component<LoginProps, IState> {
     }
 
     sendLoginRequest(): void {
-        const requestOptions = {
-            method: Verb.POST,
-            headers: {
-                // eslint-disable-next-line @typescript-eslint/naming-convention
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                username: this.state.email,
-                password: this.state.password
-            })
-        }
-
-        fetch(Endpoints.login, requestOptions)
+        HttpClient.login(this.state.email, this.state.password)
             .then(response => {
                 if (response.ok) {
                     this.props.history.push(MY_BOOKS)

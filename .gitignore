@@ -4,6 +4,9 @@ target/
 !**/src/main/**
 !**/src/test/**
 
+# dependencies
+/node_modules
+
 ### STS ###
 .apt_generated
 .classpath

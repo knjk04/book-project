@@ -3,6 +3,7 @@ version: '3'
 services:
   mysql:
     image: mysql:latest
+    platform: linux/amd64
     hostname: mysql
     restart: always
     environment:
