@@ -30,11 +30,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @IntegrationTest
 @DisplayName("ImportService should")
+@SqlGroup({@Sql(scripts = "/dev_data.sql")})
 class ImportServiceTest {
     private final ImportService importService;
     private final BookService bookService;

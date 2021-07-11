@@ -117,63 +117,6 @@ public class PredefinedShelfService {
         return predefinedShelfRepository.count();
     }
 
-    @PostConstruct
-    public void populateTestData() {
-        if (authorRepository.count() == 0) {
-            populateAuthorRepository();
-        }
-
-        if (tagRepository.count() == 0) {
-            populateTagRepository();
-        }
-
-        if (publisherRepository.count() == 0){
-            populatePublisherRepository();
-        }
-
-        for (User user : userService.findAll()) {
-            if (predefinedShelfRepository.countAllByUser(user) == 0) {
-                List<PredefinedShelf> predefinedShelves = populateShelfRepository(user);
-                populateBookRepository(predefinedShelves);
-            }
-        }
-
-        setShelfForEveryBookInBookRepository();
-    }
-
-    private void populateAuthorRepository() {
-        authorRepository.saveAll(generateAuthors());
-    }
-
-    private void populateTagRepository() {
-        tagRepository.saveAll(generateListOfTags());
-    }
-
-    private void populatePublisherRepository () {
-        publisherRepository.saveAll(generatePublishers());
-    }
-
-    private List<PredefinedShelf> populateShelfRepository(User user) {
-         return predefinedShelfRepository.saveAll(createPredefinedShelves(user));
-    }
-
-    private void populateBookRepository(List<PredefinedShelf> predefinedShelves) {
-        bookRepository.saveAll(
-                generateBooks(
-                        authorRepository.findAll(),
-                        tagRepository.findAll(),
-                        predefinedShelves,
-                        publisherRepository.findAll()
-                )
-        );
-    }
-
-    private void setShelfForEveryBookInBookRepository() {
-        List<PredefinedShelf> shelves = predefinedShelfRepository.findAll();
-        List<Book> books = setPredefinedShelfForBooks(bookRepository.findAll(), shelves);
-        bookRepository.saveAll(books);
-    }
-
     private List<PredefinedShelf> createPredefinedShelves(User user) {
         return Stream.of(PredefinedShelf.ShelfName.values())
                 .map(shelfName -> new PredefinedShelf(shelfName, user))
