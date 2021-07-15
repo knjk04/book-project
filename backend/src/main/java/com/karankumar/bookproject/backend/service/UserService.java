@@ -25,6 +25,8 @@ import com.karankumar.bookproject.backend.model.account.User;
 import com.karankumar.bookproject.backend.repository.RoleRepository;
 import com.karankumar.bookproject.backend.repository.UserRepository;
 import com.karankumar.bookproject.backend.repository.BookRepository;
+import com.nulabinc.zxcvbn.Strength;
+import com.nulabinc.zxcvbn.Zxcvbn;
 import lombok.NonNull;
 
 import org.springframework.context.annotation.Lazy;
@@ -58,6 +60,7 @@ public class UserService {
     private final PredefinedShelfService predefinedShelfService;
 
     public static final String USER_NOT_FOUND_ERROR_MESSAGE = "Could not find the user with ID %d";
+    public static final Zxcvbn zxcvbn = new Zxcvbn();
 
     public UserService(UserRepository userRepository,
                        RoleRepository roleRepository,
@@ -89,6 +92,13 @@ public class UserService {
         Role userRole = roleRepository.findByRole(UserRole.USER.toString())
                                       .orElseThrow(() -> new AuthenticationServiceException(
                                               "The default user role could not be found"));
+
+        Strength passwordStrength = zxcvbn.measure(user.getPassword());
+        if (passwordStrength.getScore() <= 2){
+            throw new ConstraintViolationException("weak password!!", constraintViolations);
+        }
+
+
         User userToRegister = User.builder()
                                   .email(user.getEmail())
                                   .password(passwordEncoder.encode(user.getPassword()))
@@ -137,6 +147,14 @@ public class UserService {
     }
 
     public void changeUserPassword(@NonNull User user, @NonNull String password) {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<String>> constraintViolations = validator.validate(password);
+
+        Strength passwordStrength = zxcvbn.measure(password);
+        if (passwordStrength.getScore() <= 2){
+            throw new ConstraintViolationException("weak password!!", constraintViolations);
+        }
+
         String encodedPassword = passwordEncoder.encode(password);
         user.setPassword(encodedPassword);
         userRepository.save(user);
